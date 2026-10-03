@@ -1,0 +1,164 @@
+/* PPE Sentinel — Windows 7 Aero theme.
+   Segoe UI, classic blue title bars, gray panels, thin borders.
+   No gradients-purple, no glassmorphism cards, no animations. */
+@import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap');
+
+html, body, [class*="css"] {
+  font-family: 'Segoe UI', Tahoma, sans-serif !important;
+  font-size: 12px;
+  color: #1A1A1A;
+}
+
+.stApp {
+  background: #F0F0F0;
+}
+
+a, a:visited {
+  color: #3B6EA5;
+}
+
+/* Title bar — Windows 7 Aero blue */
+.win7-titlebar {
+  background: linear-gradient(180deg, #4A90D9 0%, #2E5C8A 50%, #1E4066 100%);
+  color: white;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid #1E4066;
+  border-radius: 6px 6px 0 0;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.win7-titlebar .winbtns { margin-left: auto; display: flex; gap: 4px; }
+.win7-titlebar .winbtns span {
+  border: 1px solid rgba(255,255,255,0.7);
+  border-radius: 2px;
+  padding: 0 7px;
+  font-size: 11px;
+  background: rgba(255,255,255,0.12);
+}
+
+/* Classic window panel */
+.win7-panel {
+  background: #FFFFFF;
+  border: 1px solid #A0A0A0;
+  border-radius: 0 0 4px 4px;
+  padding: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+/* Classic tab strip */
+.win7-tabs {
+  display: flex;
+  background: #E1E1E1;
+  border-bottom: 1px solid #A0A0A0;
+  padding: 0;
+}
+.win7-tab {
+  padding: 6px 14px;
+  background: linear-gradient(180deg, #FAFAFA 0%, #E1E1E1 100%);
+  border: 1px solid #A0A0A0;
+  border-bottom: none;
+  margin-right: 2px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.win7-tab.active {
+  background: #FFFFFF;
+  font-weight: 600;
+  border-bottom: 1px solid #FFFFFF;
+  margin-bottom: -1px;
+}
+
+/* Classic button */
+.stButton > button {
+  background: linear-gradient(180deg, #F5F5F5 0%, #E1E1E1 45%, #CFCFCF 55%, #D8D8D8 100%) !important;
+  border: 1px solid #707070 !important;
+  border-radius: 3px !important;
+  color: #1A1A1A !important;
+  font-family: 'Segoe UI' !important;
+  font-size: 12px !important;
+  padding: 4px 14px !important;
+  box-shadow: inset 0 1px 0 #FFFFFF !important;
+}
+.stButton > button:hover {
+  border-color: #3C7FB1 !important;
+  background: linear-gradient(180deg, #EAF6FD 0%, #D9F0FC 45%, #BEE6FD 55%, #A7D9F5 100%) !important;
+}
+
+/* Sidebar — classic gray */
+section[data-testid="stSidebar"] {
+  background: #E8E8E8;
+  border-right: 1px solid #A0A0A0;
+}
+
+/* Status bar (bottom) */
+.win7-statusbar {
+  background: linear-gradient(180deg, #E8E8E8 0%, #D8D8D8 100%);
+  border-top: 1px solid #A0A0A0;
+  padding: 3px 10px;
+  font-size: 11px;
+  color: #333;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  z-index: 999;
+}
+
+/* Inputs */
+input, textarea, select {
+  border: 1px solid #A0A0A0 !important;
+  border-radius: 2px !important;
+  background: #FFFFFF !important;
+  font-family: 'Segoe UI' !important;
+  font-size: 12px !important;
+  padding: 3px 6px !important;
+}
+
+/* Expander = classic group box */
+.streamlit-expanderHeader {
+  background: #E8E8E8;
+  border: 1px solid #A0A0A0;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+/* Classic group box + message box */
+.win7-groupbox {
+  border: 1px solid #A0A0A0;
+  background: #FFFFFF;
+  padding: 10px;
+  margin: 6px 0;
+}
+.win7-groupbox > .gb-label {
+  font-weight: 600;
+  font-size: 12px;
+  color: #1E4066;
+  margin-bottom: 6px;
+  border-bottom: 1px solid #D0D0D0;
+  padding-bottom: 4px;
+}
+.win7-alert {
+  border: 1px solid #8A6D00;
+  background: #FFF8DC;
+  padding: 8px 10px;
+  font-size: 12px;
+  margin: 6px 0;
+}
+.win7-alert.red {
+  border: 1px solid #7A1F1F;
+  background: #FDECEA;
+}
+.win7-kpi {
+  border: 1px solid #A0A0A0;
+  background: #FFFFFF;
+  padding: 8px;
+  text-align: center;
+}
+.win7-kpi .k-name { font-size: 11px; color: #333; }
+.win7-kpi .k-val { font-size: 20px; font-weight: 700; color: #1E4066; }
