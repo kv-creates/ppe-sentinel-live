@@ -146,7 +146,7 @@ if video_file and st.button("Process Video", key="vid"):
     import imageio.v2 as imageio
     cap = cv2.VideoCapture(video_file)
     fps = cap.get(cv2.CAP_PROP_FPS) or 25.0
-    n_vio, n_frames, vio_frames = 0, 0, 0
+    n_vio, n_frames, vio_frames, n_red = 0, 0, 0, 0
     writer = None
     out_tmp = video_file.replace(".mp4", "_annotated.mp4")
     bar = st.progress(0, text="Scoring frames...")
@@ -161,6 +161,7 @@ if video_file and st.button("Process Video", key="vid"):
             dets = detect(frame, conf)
             vio = [d for d in dets if d["class_name"] in VIOLATIONS]
             n_vio += len(vio)
+            n_red += sum(1 for d in vio if d["zone"] == "red")
             vio_frames += bool(vio)
             if writer is None:
                 h, w = frame.shape[:2]
@@ -183,10 +184,15 @@ if video_file and st.button("Process Video", key="vid"):
     if vio_frames:
         st.markdown("<div class='win7-alert red'>Warning: violations found in "
                     f"{vio_frames} scored frame(s).</div>", unsafe_allow_html=True)
-        tg = notify_telegram(f"PPE VIOLATION in uploaded video: {n_vio} "
-                             f"violation box(es) across {vio_frames} frame(s).")
+        if n_red:
+            tg = notify_telegram(f"RED-ZONE PPE VIOLATION in uploaded video: "
+                                 f"{n_red} red-zone box(es).")
+        else:
+            tg = False
+            st.markdown("No red-zone violations — Telegram stays quiet "
+                        "(red-zone-only policy).")
         st.markdown("Telegram alert: **%s**" % ("sent" if tg else
-                    "not configured (add bot secrets to notify)"))
+                    "not sent (no red-zone violation, or bot secrets missing)"))
     if writer:
         st.video(out_tmp)
     os.remove(video_file)
