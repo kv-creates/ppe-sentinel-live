@@ -1,2 +1,7 @@
 [server]
 headless = true
+
+[theme]
+# Force light theme: the Win7 Aero skin is designed for light panels and
+# breaks visually under the browser's dark mode (see deployed screenshots).
+base = "light"

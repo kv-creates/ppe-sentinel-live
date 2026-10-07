@@ -29,7 +29,8 @@ with open(os.path.join(os.path.dirname(__file__), "win7.css"), encoding="utf-8")
 def load_model():
     import onnxruntime as ort
     opts = ort.SessionOptions()
-    opts.intra_op_num_threads = 2
+    opts.intra_op_num_threads = 1
+    opts.inter_op_num_threads = 1
     return ort.InferenceSession(WEIGHTS, sess_options=opts,
                                 providers=["CPUExecutionProvider"])
 
