@@ -46,18 +46,28 @@ chat_id = "987654321"
 ppe-sentinel-live/
 ├── app.py            # Standalone Streamlit app (detect + counters + alerts)
 ├── win7.css          # Windows 7 Aero theme (shared look with main project)
-├── model/best.pt     # YOLOv8m PPE weights, 52 MB (60 epochs, T4 GPU)
+├── model/best.onnx   # YOLOv8m PPE weights, 99 MB (60 epochs, T4 GPU)
 ├── samples/          # 4 demo site photos
-└── requirements.txt  # Slim cloud dependencies (CPU torch via ultralytics)
+├── runtime.txt       # Pinned Python 3.12 for Streamlit Cloud
+└── requirements.txt  # Torch-free, OpenCV-free: onnxruntime + pillow + imageio
 ```
 
 ## Model
 
 YOLOv8m trained 60 epochs on a T4 GPU on 1,331 real construction-site photos
 (6 classes: person, helmet, vest, no-helmet, no-vest, boots). Held-out test:
-mAP@0.5 0.70, precision 0.72, recall 0.70. Known weakness: no-helmet recall
-is low (small bare heads, 282 training samples) — see the main repository for
-the full evaluation, KPIs, and the plan to fix it with more violation photos.
+mAP@0.5 0.70, precision 0.72, recall 0.70. Served here as ONNX on CPU via
+ONNX Runtime — no PyTorch, no OpenCV, no GPU needed, which keeps the Cloud
+build small and reliable. Known weakness: no-helmet recall is low (small
+bare heads, 282 training samples) — see the main repository for the full
+evaluation, KPIs, and the plan to fix it with more violation photos.
+
+## Troubleshooting the Cloud build
+
+- Pinned `runtime.txt` (Python 3.12) avoids too-new interpreter issues.
+- If the build fails on dependencies, open Manage app → Logs and match the
+  failing package against `requirements.txt` pins.
+- First visit is slow (model loads once, ~1 min); later visits are fast.
 
 ## License
 

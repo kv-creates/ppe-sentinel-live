@@ -1,14 +1,7 @@
-# CPU-only PyTorch (the default torch wheel bundles ~2 GB of CUDA libs and
-# breaks Streamlit Community Cloud builds). Applies to torch only; everything
-# else still resolves from PyPI.
---extra-index-url https://download.pytorch.org/whl/cpu
-
-ultralytics==8.3.0
 streamlit==1.39.0
-opencv-python-headless==4.10.0.84
 numpy==1.26.4
 pillow==10.4.0
+onnxruntime
 imageio==2.36.0
 imageio-ffmpeg==0.5.1
 requests==2.32.3
-torch
