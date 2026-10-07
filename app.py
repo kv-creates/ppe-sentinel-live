@@ -53,6 +53,10 @@ def detect(img_bgr, conf):
 
 
 def overlay(img_bgr, dets):
+    return cv2.cvtColor(overlay_bgr(img_bgr, dets), cv2.COLOR_BGR2RGB)
+
+
+def overlay_bgr(img_bgr, dets):
     img = img_bgr.copy()
     for d in dets:
         x1, y1, x2, y2 = map(int, d["bbox"])
@@ -60,7 +64,22 @@ def overlay(img_bgr, dets):
         cv2.rectangle(img, (x1, y1), (x2, y2), col, 2)
         cv2.putText(img, f"{d['class_name']} {d['conf']:.2f}", (x1, max(12, y1 - 4)),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, col, 1)
-    return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    return img
+
+
+def notify_telegram(text: str) -> bool:
+    """Send via st.secrets telegram creds when present (Cloud-safe)."""
+    try:
+        sec = st.secrets.get("telegram", {})
+        token, chat = sec.get("bot_token"), sec.get("chat_id")
+        if not (token and chat):
+            return False
+        import requests
+        r = requests.post(f"https://api.telegram.org/bot{token}/sendMessage",
+                          data={"chat_id": str(chat), "text": text}, timeout=20)
+        return r.status_code == 200 and r.json().get("ok", False)
+    except Exception:  # noqa: BLE001
+        return False
 
 
 st.markdown("<div class='win7-titlebar'>PPE Sentinel Live — PPE Non-Compliance Detector"
@@ -71,12 +90,14 @@ st.markdown("Real-time helmet / vest / boots compliance checking with YOLOv8. "
             "Pick a sample photo, upload one, or take a webcam snapshot, then "
             "press Run Detection.")
 
-source = st.selectbox("Source", ["Sample photo", "Upload image", "Webcam snapshot"])
+source = st.selectbox("Source", ["Sample photo", "Upload image",
+                                 "Webcam snapshot", "Upload video (MP4)"])
 conf = st.slider("Confidence threshold", 0.05, 0.80, 0.30, 0.05)
 
-img, fname = None, "frame.jpg"
+img, fname, video_file = None, "frame.jpg", None
 if source == "Sample photo":
     samples = sorted(glob.glob(os.path.join(os.path.dirname(__file__), "samples", "*")))
+    samples = [s for s in samples if s.lower().endswith((".jpg", ".jpeg", ".png"))]
     choice = st.selectbox("Sample", samples, format_func=os.path.basename)
     if choice:
         img = cv2.imread(choice)
@@ -84,6 +105,15 @@ elif source == "Upload image":
     up = st.file_uploader("Choose a JPG/PNG", type=["jpg", "jpeg", "png"])
     if up:
         img = cv2.imdecode(np.frombuffer(up.read(), np.uint8), cv2.IMREAD_COLOR)
+elif source == "Upload video (MP4)":
+    import tempfile
+    up = st.file_uploader("Choose an MP4 (short clips work best on free Cloud)",
+                          type=["mp4", "mov"])
+    if up:
+        fd, tmp = tempfile.mkstemp(suffix=".mp4")
+        with os.fdopen(fd, "wb") as fh:
+            fh.write(up.read())
+        video_file = tmp
 else:
     shot = st.camera_input("Webcam snapshot")
     if shot:
@@ -111,6 +141,55 @@ if st.button("Run Detection", disabled=img is None):
                     unsafe_allow_html=True)
     with st.expander("Raw detections"):
         st.json(dets)
+
+if video_file and st.button("Process Video", key="vid"):
+    import imageio.v2 as imageio
+    cap = cv2.VideoCapture(video_file)
+    fps = cap.get(cv2.CAP_PROP_FPS) or 25.0
+    n_vio, n_frames, vio_frames = 0, 0, 0
+    writer = None
+    out_tmp = video_file.replace(".mp4", "_annotated.mp4")
+    bar = st.progress(0, text="Scoring frames...")
+    with st.spinner("Processing video (CPU ~1-2 s per scored frame)..."):
+        while True:
+            ok, frame = cap.read()
+            if not ok:
+                break
+            n_frames += 1
+            if (n_frames - 1) % 5:
+                continue
+            dets = detect(frame, conf)
+            vio = [d for d in dets if d["class_name"] in VIOLATIONS]
+            n_vio += len(vio)
+            vio_frames += bool(vio)
+            if writer is None:
+                h, w = frame.shape[:2]
+                writer = imageio.get_writer(out_tmp, fps=max(1.0, fps / 5),
+                                            codec="libx264", quality=8,
+                                            macro_block_size=None)
+            writer.append_data(cv2.cvtColor(
+                overlay_bgr(frame, dets), cv2.COLOR_BGR2RGB))
+            bar.progress(min(0.99, n_frames / max(1, int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) or 1)))
+        cap.release()
+        if writer:
+            writer.close()
+    bar.progress(1.0, text="Done.")
+    m1, m2 = st.columns(2)
+    for col, name, val in ((m1, "Frames scored", f"~{n_frames // 5}"),
+                           (m2, "Violations", n_vio)):
+        with col:
+            st.markdown(f"<div class='win7-kpi'><div class='k-name'>{name}</div>"
+                        f"<div class='k-val'>{val}</div></div>", unsafe_allow_html=True)
+    if vio_frames:
+        st.markdown("<div class='win7-alert red'>Warning: violations found in "
+                    f"{vio_frames} scored frame(s).</div>", unsafe_allow_html=True)
+        tg = notify_telegram(f"PPE VIOLATION in uploaded video: {n_vio} "
+                             f"violation box(es) across {vio_frames} frame(s).")
+        st.markdown("Telegram alert: **%s**" % ("sent" if tg else
+                    "not configured (add bot secrets to notify)"))
+    if writer:
+        st.video(out_tmp)
+    os.remove(video_file)
 
 st.markdown("---")
 with st.expander("Model card"):

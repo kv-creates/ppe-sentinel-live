@@ -23,6 +23,23 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
+## Video + Telegram alerts
+
+- Source menu includes **Upload video (MP4)**: every 5th frame is scored,
+  violations are counted, and an annotated MP4 plays back in the page.
+- **Telegram:** add repository Secrets in Streamlit Cloud (App settings →
+  Secrets) with:
+
+```toml
+[telegram]
+bot_token = "123456:ABC..."
+chat_id = "987654321"
+```
+
+  Video violations then message your bot automatically. Locally, the same
+  keys work via `st secrets.toml` or the main project's environment
+  variables.
+
 ## Contents
 
 ```text

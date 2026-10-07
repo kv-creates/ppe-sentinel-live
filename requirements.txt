@@ -3,3 +3,6 @@ streamlit
 opencv-python-headless
 numpy
 pillow
+imageio
+imageio-ffmpeg
+requests
