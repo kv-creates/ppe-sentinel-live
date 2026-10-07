@@ -1,6 +1,10 @@
-streamlit==1.39.0
-numpy==1.26.4
-pillow==10.4.0
+# Pinned to versions that ship Python 3.14 Linux wheels (Streamlit Cloud
+# currently builds on 3.14 and ignores runtime.txt). Do NOT downgrade
+# numpy/pillow below 2.x/11.x: old versions have no cp314 wheels and pip
+# falls back to source builds, which fail on missing zlib headers.
+streamlit==1.65.0
+numpy==2.5.3
+pillow==12.3.0
 onnxruntime==1.30.0
 imageio==2.36.0
 imageio-ffmpeg==0.5.1
