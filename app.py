@@ -181,6 +181,18 @@ if img is not None and st.button("Run Detection"):
         st.markdown("<div class='win7-alert red'>Warning: <b>PPE VIOLATION "
                     "DETECTED</b> — supervisor should intervene.</div>",
                     unsafe_allow_html=True)
+        red = [d for d in dets if d["class_name"] in VIOLATIONS
+               and d["zone"] == "red"]
+        if red:
+            top = max(red, key=lambda d: d["conf"])
+            tg = notify_telegram(
+                f"PPE VIOLATION {stamp()} — {top['class_name']} "
+                f"({top['conf']:.0%}) in RED zone.", jpeg_bytes(ov))
+            st.markdown("Telegram photo alert: **%s**" % ("sent" if tg else
+                        "not sent (bot secrets missing)"))
+        else:
+            st.markdown("No red-zone violations — Telegram stays quiet "
+                        "(red-zone-only policy).")
     else:
         st.markdown("<div class='win7-alert'>No violation — site compliant.</div>",
                     unsafe_allow_html=True)
@@ -196,6 +208,7 @@ if video_file and st.button("Process Video", key="vid"):
     writer = imageio.get_writer(out_tmp, fps=max(1.0, fps / 5), codec="libx264",
                                 quality=8, macro_block_size=None)
     n_vio = n_red = vio_frames = n_scored = 0
+    last_frame_jpeg = None
     try:
         total_frames = int(meta.get("nframes", 0) or 0)
     except (OverflowError, ValueError):  # imageio may report inf
@@ -214,6 +227,8 @@ if video_file and st.button("Process Video", key="vid"):
             n_red += sum(1 for d in vio if d["zone"] == "red")
             vio_frames += bool(vio)
             writer.append_data(np.asarray(ov))
+            if vio:
+                last_frame_jpeg = jpeg_bytes(ov)
             if total_frames:
                 bar.progress(min(0.99, (n + 1) / total_frames))
             else:
@@ -230,11 +245,12 @@ if video_file and st.button("Process Video", key="vid"):
         st.markdown("<div class='win7-alert red'>Warning: violations found in "
                     f"{vio_frames} scored frame(s).</div>", unsafe_allow_html=True)
         if n_red:
-            tg = notify_telegram(f"RED-ZONE PPE VIOLATION in uploaded video: "
-                                 f"{n_red} red-zone box(es).")
-            st.markdown("Telegram alert: **%s**" % ("sent" if tg else
-                        "not sent (bot secrets missing)"))
+            tg = notify_telegram(f"RED-ZONE PPE VIOLATION {stamp()} in uploaded "
+                                 f"video: {n_red} red-zone box(es) across "
+                                 f"{vio_frames} frame(s).",
+                                 photo_bytes=last_frame_jpeg)
         else:
+            tg = False
             st.markdown("No red-zone violations — Telegram stays quiet "
                         "(red-zone-only policy).")
     st.video(out_tmp)
