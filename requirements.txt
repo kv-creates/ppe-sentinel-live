@@ -1,7 +1,7 @@
 streamlit==1.39.0
 numpy==1.26.4
 pillow==10.4.0
-onnxruntime
+onnxruntime==1.30.0
 imageio==2.36.0
 imageio-ffmpeg==0.5.1
 requests==2.32.3
