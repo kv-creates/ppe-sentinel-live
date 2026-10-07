@@ -27,8 +27,8 @@ streamlit run app.py
 
 - Source menu includes **Upload video (MP4)**: every 5th frame is scored,
   violations are counted, and an annotated MP4 plays back in the page.
-- **Telegram:** add repository Secrets in Streamlit Cloud (App settings →
-  Secrets) with:
+- **Telegram:** video violations in the **red zone only** message your bot.
+  Add repository Secrets in Streamlit Cloud (App settings → Secrets) with:
 
 ```toml
 [telegram]

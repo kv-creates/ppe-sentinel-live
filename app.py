@@ -18,7 +18,7 @@ COLORS = {"person": (255, 200, 60), "helmet": (60, 200, 60), "vest": (60, 200, 6
 WEIGHTS = os.path.join(os.path.dirname(__file__), "model", "best.pt")
 
 st.set_page_config(page_title="PPE Sentinel Live", layout="wide")
-with open(os.path.join(os.path.dirname(__file__), "win7.css")) as fh:
+with open(os.path.join(os.path.dirname(__file__), "win7.css"), encoding="utf-8") as fh:
     st.markdown(f"<style>{fh.read()}</style>", unsafe_allow_html=True)
 
 

@@ -162,3 +162,127 @@ input, textarea, select {
 }
 .win7-kpi .k-name { font-size: 11px; color: #333; }
 .win7-kpi .k-val { font-size: 20px; font-weight: 700; color: #1E4066; }
+
+/* ============ AERO V2 — high-contrast authentic Windows 7 ============ */
+
+/* Faint desktop wash (flat, near-gray: authentic dialog backdrop) */
+.stApp {
+  background: linear-gradient(180deg, #DCE9F5 0%, #F0F0F0 120px, #F0F0F0 100%);
+}
+
+/* Deeper Aero glass title bar with outer glow */
+.win7-titlebar {
+  background: linear-gradient(180deg, #5FA4DE 0%, #3B7CC2 8%, #245A94 50%, #16395E 100%);
+  border: 1px solid #0F2A44;
+  border-radius: 8px 8px 0 0;
+  text-shadow: 0 0 6px rgba(255,255,255,0.55), 1px 1px 2px rgba(0,0,0,0.8);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.35) inset, 0 2px 8px rgba(0,0,0,0.35);
+  font-size: 14px;
+  padding: 9px 14px;
+}
+.win7-titlebar .winbtns span {
+  border: 1px solid #FFFFFF;
+  background: linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.05) 50%, rgba(0,0,0,0.15) 100%);
+  box-shadow: 0 0 4px rgba(255,255,255,0.6);
+}
+
+/* Sharper window frame */
+.win7-panel {
+  border: 1px solid #5A5A5A;
+  border-top: 1px solid #0F2A44;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.5) inset, 0 4px 14px rgba(0,0,0,0.30);
+}
+
+/* Etched group boxes, navy labels */
+.win7-groupbox {
+  border: 1px solid #5A5A5A;
+  box-shadow: 0 0 0 1px #FFFFFF inset, 1px 1px 2px rgba(0,0,0,0.12);
+}
+.win7-groupbox > .gb-label {
+  color: #0F3B5F;
+  border-bottom: 1px solid #8A8A8A;
+}
+.win7-kpi {
+  border: 1px solid #5A5A5A;
+  box-shadow: 0 0 0 1px #FFFFFF inset;
+}
+.win7-kpi .k-val { color: #0F3B5F; }
+
+/* High-contrast bevelled buttons */
+.stButton > button {
+  border: 1px solid #3C3C3C !important;
+  box-shadow: inset 0 1px 0 #FFFFFF, 0 1px 2px rgba(0,0,0,0.25) !important;
+  font-weight: 600 !important;
+}
+.stButton > button:active {
+  background: linear-gradient(180deg, #C9DCEB 0%, #A9C6DE 100%) !important;
+}
+
+/* Dark glass taskbar with Start orb (replaces plain status bar) */
+.win7-statusbar {
+  background: linear-gradient(180deg, rgba(70,130,180,0.92) 0%, rgba(25,60,100,0.95) 12%, rgba(8,20,36,0.96) 55%, rgba(4,12,22,0.97) 100%);
+  border-top: 1px solid rgba(255,255,255,0.35);
+  box-shadow: 0 -1px 8px rgba(0,0,0,0.5);
+  color: #FFFFFF;
+  font-size: 12px;
+  padding: 5px 12px 5px 46px;
+  text-shadow: 1px 1px 2px #000000;
+  min-height: 30px;
+  align-items: center;
+}
+.win7-statusbar::before {
+  content: "❖";
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 26px;
+  height: 26px;
+  line-height: 24px;
+  text-align: center;
+  font-size: 15px;
+  color: #FFFFFF;
+  background: radial-gradient(circle at 35% 30%, #8FC4EE 0%, #2E7CC4 45%, #123A63 100%);
+  border: 1px solid rgba(255,255,255,0.7);
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(120,190,255,0.9), inset 0 1px 2px rgba(255,255,255,0.6);
+  text-shadow: 0 0 4px #FFFFFF;
+}
+
+/* Sidebar = Win7 navigation pane */
+section[data-testid="stSidebar"] {
+  background: linear-gradient(180deg, #E4F1FB 0%, #D4E6F7 100%);
+  border-right: 1px solid #5A5A5A;
+}
+section[data-testid="stSidebar"] a:hover {
+  background: #CCE8FF !important;
+  border: 1px dotted #99D1FF !important;
+}
+
+/* Glossy Win7 progress bar */
+div[data-testid="stProgress"] > div > div > div > div {
+  background: linear-gradient(180deg, #A8E063 0%, #56B34B 50%, #2E8B2E 100%) !important;
+  border-right: 1px solid #1E6B1E;
+}
+div[data-testid="stProgress"] > div > div {
+  border: 1px solid #5A5A5A;
+  background: #FFFFFF;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+  padding: 1px;
+}
+
+/* Win7 focus glow on inputs */
+input:focus, textarea:focus, select:focus {
+  border-color: #3C7FB1 !important;
+  box-shadow: 0 0 4px rgba(60,127,177,0.8) !important;
+}
+
+/* Sharper alert boxes */
+.win7-alert { border: 1px solid #5A4A00; box-shadow: 1px 1px 2px rgba(0,0,0,0.15); }
+.win7-alert.red { border: 1px solid #5A1414; }
+
+/* Classic sunken video/photo frame */
+.stImage > img, .stVideo > video {
+  border: 1px solid #5A5A5A !important;
+  box-shadow: 0 0 0 1px #FFFFFF inset, 2px 2px 5px rgba(0,0,0,0.25);
+}
